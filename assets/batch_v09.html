@@ -1,0 +1,33 @@
+      <!-- BATCH_V09_HTML_START -->
+      <section id="batch-panel" class="panel batch-panel" aria-labelledby="batch-title">
+        <h2 id="batch-title">Пакетное сравнение резюме · v0.9</h2>
+        <p class="info">Одна вакансия — до пяти резюме. Система сопоставляет проверяемые цитаты и показывает отдельные матрицы. <strong>Не ранжирует кандидатов и не принимает кадровых решений.</strong></p>
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="batch-vacancy">Выбранная вакансия</label>
+            <select id="batch-vacancy"></select>
+            <p class="hint">Сначала выполни обычный анализ в форме выше, чтобы загрузить вакансии.</p>
+          </div>
+          <div class="field wide">
+            <label for="batch-resumes">Резюме для сравнения (PDF/DOCX/TXT, до 6 МБ каждое)</label>
+            <input id="batch-resumes" type="file" accept=".pdf,.docx,.txt" multiple>
+            <p class="hint">Максимум пять файлов. Они не сохраняются в базе и используются только для текущего анализа.</p>
+          </div>
+        </div>
+        <label class="consent" for="batch-cloud-consent">
+          <input type="checkbox" id="batch-cloud-consent">
+          <span>Разрешаю передачу выбранной вакансии и каждого загруженного резюме в OpenAI для структурированного извлечения. Понимаю, что выполняется до 1 + N оплачиваемых запросов (N — число резюме), а при повторном использовании вакансии на один запрос меньше.</span>
+        </label>
+        <label class="consent" for="batch-experience">
+          <input type="checkbox" id="batch-experience">
+          <span>Дополнительно проанализировать датированные периоды работы и обязанности каждого кандидата через OpenAI (обычно ещё до двух оплачиваемых запросов на резюме).</span>
+        </label>
+        <div class="action">
+          <button type="button" id="batch-run">Сопоставить резюме</button>
+          <span class="hint">Обработка идёт по очереди. Единая матрица собирается локально без дополнительных API-вызовов.</span>
+        </div>
+        <p id="batch-status" class="info status" role="status" aria-live="polite"></p>
+        <div id="batch-output" class="hidden"></div>
+        <p class="notice">Доли дословных упоминаний не означают качество кандидата. Неподтверждённые сведения требуют ручной проверки. Полноценный RAG по каждому резюме отдельно в этом режиме не запускается.</p>
+      </section>
+      <!-- BATCH_V09_HTML_END -->
