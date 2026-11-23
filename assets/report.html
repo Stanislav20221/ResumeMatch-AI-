@@ -1,0 +1,19 @@
+          <!-- REPORT_V08_HTML_START -->
+          <section id="report-panel" class="report-panel" aria-labelledby="report-title">
+            <h3 id="report-title">Итоговый отчёт по кандидату · v0.8</h3>
+            <p class="info">Собирает проверяемую матрицу заново, показывает нейтральное заключение и создаёт PDF с цитатами. Это не оценка пригодности к найму. Отчёт формируется локально, без дополнительных запросов к OpenAI.</p>
+            <div class="report-fields">
+              <label class="field" for="report-candidate">
+                <span>Подпись кандидата (необязательно)</span>
+                <input id="report-candidate" type="text" maxlength="120" placeholder="Например: Кандидат № 1">
+              </label>
+            </div>
+            <div class="action report-actions">
+              <button type="button" id="report-preview-button" class="secondary">Предпросмотр отчёта</button>
+              <button type="button" id="report-pdf-button">Скачать отчёт PDF</button>
+            </div>
+            <p id="report-status" class="info status" role="status" aria-live="polite"></p>
+            <div id="report-preview" class="report-preview hidden"></div>
+            <p class="hint">PDF сохранится на устройстве и может содержать персональные данные резюме. Не пересылай его без разрешения кандидата.</p>
+          </section>
+          <!-- REPORT_V08_HTML_END -->

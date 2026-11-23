@@ -11,3 +11,5 @@ pytest>=8,<10
 # v0.6 RAG: exact FAISS similarity search in RAM
 faiss-cpu>=1.13,<2
 numpy>=2.0,<3
+# v0.8: локальный PDF-экспорт
+reportlab>=4.4,<5

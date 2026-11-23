@@ -14,12 +14,14 @@ from .matching import rank_matches
 from .vacancies import VacancyError, search_hh
 from .rag_api import router as rag_router
 from .evidence_matrix_api import router as evidence_router
+from .report_v08_api import router as report_router
 from .llm_match_api import router as llm_match_router
 from .llm_semantic_api import router as llm_semantic_router
 from .llm_experience_api import router as llm_experience_router
 app = FastAPI(title="ResumeMatch AI", version="0.1.0", docs_url="/docs")
 app.include_router(rag_router)
 app.include_router(evidence_router)
+app.include_router(report_router)
 app.include_router(llm_router)
 app.include_router(llm_match_router)
 app.include_router(llm_semantic_router)

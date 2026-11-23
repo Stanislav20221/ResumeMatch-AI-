@@ -134,3 +134,12 @@ POST	/api/llm/experience-match	Анализ дат, стажа и обязанн
 
 **Установка и API:** [README_RAG_v0.6.md](README_RAG_v0.6.md).
 <!-- RAG_V06_README_END -->
+
+
+<!-- REPORT_V08_README_START -->
+## Итоговый отчёт и PDF (v0.8)
+
+Сервер повторно строит доказательную матрицу v0.7 по исходному резюме и вакансии, затем формирует локальный PDF с цитатами, статусами и нейтральным заключением. Новых вызовов OpenAI нет. Совпадение названия навыка не доказывает компетентность; выводы LLM и RAG требуют ручной проверки.
+
+Маршруты: `POST /api/report/preview` и `POST /api/report/pdf`. Подробности: [README_REPORT_v0.8.md](README_REPORT_v0.8.md).
+<!-- REPORT_V08_README_END -->
