@@ -1,0 +1,1148 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ResumeMatch AI · Матрица соответствия</title>
+
+  <style>
+    /* 1. Базовые стили */
+    :root {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      color: #142338;
+      background: #f4f6fa;
+      font-synthesis: none;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1500px; margin: 0 auto; padding: 32px 24px 80px; }
+    p { line-height: 1.6; color: #5d6e80; }
+    h1 { font-size: clamp(29px, 4vw, 45px); letter-spacing: -1.7px; line-height: 1.1; margin: 10px 0 12px; }
+    h2 { margin: 0 0 14px; font-size: 20px; letter-spacing: -.5px; }
+    .hidden { display: none !important; }
+    .info { font-size: 13px; color: #62758a; }
+    .hint { color: #77869b; font-size: 12px; line-height: 1.5; }
+    .notice { margin-top: 22px; color: #647b93; font-size: 12px; line-height: 1.6; }
+
+    /* 2. Шапка и описание */
+    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .brand { font-weight: 800; letter-spacing: -.6px; font-size: 21px; color: #173b70; }
+    .brand span { color: #4c82ef; }
+    .header-note { font-size: 12px; color: #63758b; }
+    .eyebrow { color: #3c70d9; letter-spacing: .14em; text-transform: uppercase; font-size: 12px; font-weight: 800; }
+    .lead { max-width: 770px; margin-bottom: 27px; }
+
+    /* 3. Панели, формы и кнопки */
+    .panel {
+      background: #fff;
+      border: 1px solid #dfe7f0;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 8px 30px #1c47730c;
+    }
+    .panel + .panel { margin-top: 20px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .field { display: flex; flex-direction: column; gap: 8px; }
+    .field label { font-size: 13px; font-weight: 700; color: #294262; }
+    .wide { grid-column: 1 / -1; }
+
+    input:not([type="checkbox"]), select {
+      width: 100%;
+      min-height: 46px;
+      padding: 11px 12px;
+      border: 1px solid #ced9e7;
+      border-radius: 10px;
+      background: #fff;
+      color: #12253d;
+      font: inherit;
+    }
+    input[type="file"] { padding: 10px; }
+    input[type="checkbox"] { width: 17px; height: 17px; margin: 0; flex: 0 0 auto; accent-color: #2462df; }
+    .consent { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; line-height: 1.5; color: #294262; cursor: pointer; }
+    .action { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 22px; }
+
+    button { background: #2462df; color: white; border: 0; border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; }
+    button:hover { background: #164ebf; }
+    button:disabled { opacity: .55; cursor: wait; }
+    button.secondary { background: #eef4ff; color: #1d52b6; }
+    button.secondary:hover { background: #dceaff; }
+
+    .error { background: #fff3f0; color: #973f2e; border: 1px solid #f9d1c6; border-radius: 10px; padding: 14px; white-space: pre-wrap; margin-top: 18px; }
+    .status { min-height: 18px; margin-top: 14px; }
+    .error-text { color: #973f2e; }
+
+    /* 4. Результаты и карточки вакансий */
+    .results-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin: 32px 0 18px; }
+    .results-head h2 { margin: 0; }
+    .source-info { margin-bottom: 17px; }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 17px; }
+    .stat { border: 1px solid #dfe7f0; background: #fff; padding: 18px; border-radius: 13px; }
+    .stat b { font-size: 28px; color: #152c4b; display: block; }
+    .stat span { color: #6d7d90; font-size: 13px; }
+
+    .vacancy { background: #fff; border: 1px solid #dfe7f0; border-radius: 16px; padding: 22px; margin: 13px 0; }
+    .vacancy-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .vacancy h3 { margin: 0 0 5px; font-size: 19px; }
+    .company { font-size: 13px; color: #718199; }
+    .vacancy a { display: inline-block; margin-top: 6px; color: #2564dd; text-decoration: none; }
+    .badge { font-weight: 800; font-size: 22px; padding: 8px 13px; background: #eef6ff; color: #2760b7; border-radius: 11px; white-space: nowrap; }
+    .meter { height: 8px; background: #e7ecf3; border-radius: 20px; overflow: hidden; margin: 16px 0 6px; }
+    .meter > div { background: #39a582; height: 100%; border-radius: 20px; }
+    .vacancy-meta { color: #708198; font-size: 13px; margin: 10px 0; }
+
+    /* 5. Матрица и JSON */
+    details { margin-top: 13px; border-top: 1px solid #ebeff4; padding-top: 14px; }
+    summary { color: #2056b8; cursor: pointer; font-size: 14px; font-weight: 700; }
+    .table-wrap { overflow-x: auto; }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; margin-top: 14px; }
+    th { text-align: left; background: #f2f6fd; color: #506780; }
+    td, th { border-bottom: 1px solid #e7edf4; padding: 11px 10px; vertical-align: top; }
+    .quote { margin-top: 4px; color: #718198; font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .yes { color: #187a57; font-weight: 700; }
+    .no { color: #a65b31; font-weight: 700; }
+    .json-panel { margin-top: 20px; }
+    pre { background: #11243d; color: #d5e6fc; padding: 17px; border-radius: 12px; max-height: 420px; overflow: auto; font-size: 12px; line-height: 1.5; }
+    .llm-output h3 { margin: 20px 0 8px; font-size: 15px; }
+
+    .llm-match-panel { margin-top: 24px; border-top: 1px solid #e5ebf3; padding-top: 10px; }
+    .llm-match-score { font-size: 28px; font-weight: 800; color: #1a416e; }
+    .llm-match-summary { background: #f2f6fd; border-radius: 12px; padding: 15px; margin: 10px 0 16px; }
+    .llm-match-summary p { margin: 7px 0 0; font-size: 12px; }
+    .manual-review { color: #895417; font-weight: 700; }
+    .llm-match-table { overflow-x: auto; margin-bottom: 18px; }
+    .llm-match-table table { min-width: 690px; }
+
+    /* v0.4: отдельная семантическая проверка и раскрываемые доказательства */
+    .semantic-panel { margin-top: 26px; padding-top: 20px; border-top: 2px solid #e3ecf6; }
+    .semantic-summary { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin: 18px 0; }
+    .semantic-stat { background: #f2f6fd; border-radius: 14px; padding: 16px 18px; }
+    .semantic-stat b { display: block; font-size: 27px; color: #193e68; }
+    .semantic-stat span { font-size: 13px; color: #5b6c80; }
+    .semantic-item { margin: 10px 0; border: 1px solid #dfe7f0; border-radius: 12px; padding: 14px 16px; }
+    .semantic-item details { margin-top: 10px; padding-top: 10px; }
+    .semantic-item-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .semantic-pill { display: inline-block; font-size: 12px; font-weight: 700; background: #eaf4ff; color: #164b9c; padding: 6px 9px; border-radius: 8px; }
+    .semantic-pill.partial { background: #fff2dd; color: #905516; }
+    .semantic-pill.unknown { background: #f1f3f6; color: #6b7280; }
+    .semantic-evidence { padding: 9px 0; border-top: 1px solid #edf0f5; }
+    .semantic-evidence q { display: block; color: #33475f; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .semantic-evidence .info { margin-top: 5px; }
+    .semantic-note { color: #66768a; font-size: 13px; }
+    #semantic-status { min-height: 20px; }
+
+    .llm-match-table h4 { margin: 12px 0 2px; font-size: 14px; }
+
+    /* v0.5: опыт, хронология и проверяемые источники */
+    .experience-panel { margin-top: 26px; border-top: 2px solid #dfe9f7; padding-top: 22px; }
+    .experience-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0 20px; }
+    .experience-stat { padding: 16px; border-radius: 12px; background: #f0f5fc; }
+    .experience-stat b { display: block; font-size: 25px; color: #183e6c; }
+    .experience-stat span { font-size: 12px; color: #61758a; }
+    .experience-card { border: 1px solid #dfe7f0; padding: 15px; border-radius: 12px; margin: 12px 0; }
+    .experience-card h4 { margin: 0 0 8px; font-size: 15px; }
+    .experience-tag { font-weight: 700; font-size: 12px; padding: 4px 8px; border-radius: 6px; background: #edf3fd; color: #265a9c; }
+    .experience-tag.warn { background: #fff3e4; color: #915c25; }
+    .experience-evidence { white-space: pre-wrap; overflow-wrap: anywhere; color: #425a73; font-size: 13px; margin: 7px 0; }
+    .experience-row { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; justify-content: space-between; }
+    @media(max-width:760px){ .experience-stats { grid-template-columns: 1fr; } }
+
+    /* 6. Адаптивность */
+    @media (max-width: 760px) {
+      main { padding: 21px 14px 52px; }
+      header { align-items: flex-start; }
+      .panel { padding: 17px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .wide { grid-column: auto; }
+      .stat-row { grid-template-columns: 1fr; }
+      .semantic-summary { grid-template-columns: 1fr; }
+      .vacancy { padding: 15px; }
+      table { font-size: 12px; }
+      td, th { padding: 7px 5px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <!-- Шапка -->
+    <header>
+      <div class="brand">Resume<span>Match</span> AI</div>
+      <div class="header-note">Локальный MVP · Python / FastAPI</div>
+    </header>
+
+    <!-- Описание проекта -->
+    <section aria-labelledby="page-title">
+      <div class="eyebrow">Document intelligence / Demo project</div>
+      <h1 id="page-title">От резюме к матрице<br>соответствия вакансии</h1>
+      <p class="lead">
+        Загрузите резюме, получите структурированный JSON и сравните навыки
+        с требованиями вакансий. При необходимости включите OpenAI-анализ
+        с подтверждающими фрагментами исходного текста.
+      </p>
+    </section>
+
+    <!-- Форма базового анализа: без передачи резюме в OpenAI -->
+    <section class="panel" aria-labelledby="analysis-title">
+      <h2 id="analysis-title">Новый анализ</h2>
+
+      <form id="form">
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="resume">Резюме</label>
+            <input type="file" id="resume" name="resume" accept=".pdf,.docx,.txt" required>
+            <div class="hint">
+              PDF с текстовым слоем, DOCX или TXT (UTF-8), до 6 МБ.
+              Для сканированных PDF можно включить локальный OCR.
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="search_query">Поисковый запрос на hh.ru</label>
+            <input id="search_query" name="search_query" value="Python разработчик" placeholder="Например: LLM разработчик">
+          </div>
+
+          <div class="field">
+            <label for="count">Количество первых вакансий</label>
+            <select id="count" name="count">
+              <option value="3">3</option>
+              <option value="5" selected>5</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="mode">Источник вакансий</label>
+            <select id="mode" name="mode">
+              <option value="demo">Демо — вымышленные вакансии</option>
+              <option value="hh">hh.ru API — реальные вакансии</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="area">Код региона hh.ru (необязательно)</label>
+            <input id="area" name="area" placeholder="1 — Москва; 2 — Санкт-Петербург">
+          </div>
+        </div>
+
+        <div class="action">
+          <button type="submit" id="run">Проанализировать резюме</button>
+          <span class="hint">В базовом режиме резюме обрабатывается локально и не отправляется в OpenAI.</span>
+        </div>
+      </form>
+
+      <div id="error" class="error hidden" role="alert"></div>
+    </section>
+
+    <!-- Результаты базового анализа -->
+    <section id="results" class="hidden" aria-labelledby="results-title">
+      <div class="results-head">
+        <h2 id="results-title">Результаты анализа</h2>
+        <button type="button" class="secondary" id="download">Скачать полный JSON</button>
+      </div>
+
+      <div id="source-info" class="info source-info"></div>
+
+      <div class="stat-row">
+        <div class="stat"><b id="stat-skills">—</b><span>Навыков распознано в резюме</span></div>
+        <div class="stat"><b id="stat-vacancies">—</b><span>Вакансий обработано</span></div>
+        <div class="stat"><b id="stat-top">—</b><span>Наибольший процент совпадения</span></div>
+      </div>
+
+      <div id="vacancies"></div>
+
+      <!-- JSON базового извлечения -->
+      <div class="panel json-panel">
+        <h2>JSON резюме · локальное извлечение</h2>
+        <p class="info">Явно распознанные навыки и фрагменты резюме. Для PDF — страница источника.</p>
+        <pre id="resume-json"></pre>
+      </div>
+
+      <!-- Отдельный LLM-анализ: только после согласия пользователя -->
+      <div class="panel json-panel" id="llm-panel">
+        <h2>LLM-анализ OpenAI</h2>
+        <p class="info">
+          Модель извлечёт структурированные факты из резюме и выбранной вакансии.
+          Для каждого факта будут показаны исходная цитата <code>source_text</code>
+          и результат проверки <code>source_verified</code>.
+        </p>
+
+        <div class="field" style="margin: 16px 0">
+          <label for="llm-vacancy-select">Вакансия для подробного LLM-анализа</label>
+          <select id="llm-vacancy-select"></select>
+        </div>
+
+        <label class="consent" for="llm-consent">
+          <input type="checkbox" id="llm-consent">
+          <span>Разрешаю отправить содержимое выбранного резюме и текст выбранной вакансии в OpenAI API.</span>
+        </label>
+
+        <div class="action">
+          <button type="button" id="run-llm">Извлечь данные через OpenAI</button>
+          <span class="hint">Два платных API-запроса; ключ хранится только на сервере в .env.</span>
+        </div>
+
+        <p class="info status" id="llm-status" role="status" aria-live="polite"></p>
+
+        <div id="llm-output" class="llm-output hidden">
+          <h3>Структурированное резюме</h3>
+          <pre id="llm-resume-json"></pre>
+
+          <h3>Структурированная вакансия</h3>
+          <pre id="llm-vacancy-json"></pre>
+
+          <!-- Сопоставление выполняется в Python без нового вызова OpenAI -->
+          <section id="llm-matching" class="llm-match-panel hidden" aria-labelledby="llm-match-title">
+            <h3 id="llm-match-title">Матрица по LLM-данным</h3>
+            <div id="llm-match-summary"></div>
+            <div id="llm-match-matrices"></div>
+            <p class="notice" id="llm-match-disclaimer"></p>
+          </section>
+
+          <!-- v0.4: отдельный платный этап, без автоматического подтверждения -->
+          <section id="semantic-panel" class="semantic-panel hidden" aria-labelledby="semantic-title">
+            <h3 id="semantic-title">Семантическое сопоставление · OpenAI</h3>
+            <p class="info">
+              Для требований без точного совпадения модель ищет смысловые доказательства
+              в подтверждённых цитатах резюме. Результат — предложение для проверки человеком,
+              а не окончательная оценка. Стаж выводится отдельно и не включается в процент.
+            </p>
+            <label class="consent" for="semantic-consent">
+              <input type="checkbox" id="semantic-consent">
+              <span>Разрешаю дополнительную отправку извлечённых фактов и цитат резюме и вакансии в OpenAI API.</span>
+            </label>
+            <div class="action">
+              <button type="button" id="run-semantic">Проверить смысловые совпадения (OpenAI)</button>
+              <span class="hint">Отдельный платный запрос; ключ не передаётся в браузер.</span>
+            </div>
+            <p id="semantic-status" class="info status" role="status" aria-live="polite"></p>
+            <div id="semantic-results" class="hidden"></div>
+          </section>
+
+          <!-- v0.5: отдельная проверка стажа и обязанностей по исходному резюме -->
+          <section id="experience-panel" class="experience-panel hidden" aria-labelledby="experience-title">
+            <h3 id="experience-title">Опыт работы, сроки и обязанности · OpenAI</h3>
+            <p class="info">
+              Повторно читаем исходное резюме, извлекаем датированные места работы,
+              сверяем дословные цитаты и сравниваем обязанности с выбранной вакансией.
+              Сроки без точного месяца и года не подсчитываются. Итоги требуют проверки человеком.
+            </p>
+            <label class="consent" for="experience-consent">
+              <input type="checkbox" id="experience-consent">
+              <span>Разрешаю дополнительную отправку текста резюме и подтверждённых цитат вакансии в OpenAI API (1–2 платных запроса).</span>
+            </label>
+            <div class="action">
+              <button type="button" id="run-experience">Проверить стаж и обязанности (OpenAI)</button>
+              <span class="hint">Процент совпадения навыков не изменится.</span>
+            </div>
+            <p id="experience-status" class="info status" role="status" aria-live="polite"></p>
+            <div id="experience-results" class="hidden"></div>
+          </section>
+        </div>
+      </div>
+
+      <p class="notice">
+        Процент в основных карточках рассчитан локальным словарём навыков.
+        Новая LLM-матрица ниже рассчитывается отдельно по извлечённым фактам.
+        Ни один показатель не является вероятностью трудоустройства.
+        <code>source_verified: true</code> означает, что цитата найдена в исходном тексте;
+        смысловая корректность факта проверяется отдельно.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    // ==========================================================
+    // 1. Состояние и общие вспомогательные функции
+    // ==========================================================
+    const $ = (id) => document.getElementById(id);
+
+    let latest = null;
+    let analyzedInputSnapshot = null;
+
+    function make(tag, text = '', className = '') {
+      const element = document.createElement(tag);
+      element.textContent = String(text);
+      if (className) element.className = className;
+      return element;
+    }
+
+    function isSafeVacancyLink(url) {
+      try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'https:' &&
+          (parsed.hostname === 'hh.ru' || parsed.hostname.endsWith('.hh.ru'));
+      } catch {
+        return false;
+      }
+    }
+
+    function getCurrentInputSnapshot() {
+      const file = $('resume').files[0];
+      return JSON.stringify({
+        file: file ? [file.name, file.size, file.lastModified] : null,
+        query: $('search_query').value,
+        count: $('count').value,
+        mode: $('mode').value,
+        area: $('area').value
+      });
+    }
+
+    async function getJsonResponse(response) {
+      const body = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const detail = body.detail || `HTTP ${response.status}`;
+        throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
+      }
+      return body;
+    }
+
+    function downloadJson(data, filename) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], {
+        type: 'application/json;charset=utf-8'
+      });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    // ==========================================================
+    // 2. Матрица соответствия для одной вакансии
+    // ==========================================================
+    function makeMatrix(match) {
+      const wrap = make('div', '', 'table-wrap');
+
+      if (!match.matrix.length) {
+        wrap.append(make('p', 'Распознаваемых требований нет — процент не рассчитан.'));
+        return wrap;
+      }
+
+      const table = make('table');
+      const header = make('tr');
+
+      ['Навык / цитата вакансии', 'Статус', 'Цитата резюме'].forEach((title) => {
+        header.append(make('th', title));
+      });
+      table.append(header);
+
+      for (const row of match.matrix) {
+        const tr = make('tr');
+
+        const requirement = make('td');
+        requirement.append(make('strong', row.requirement));
+        requirement.append(make('div', row.vacancy_source_text || '', 'quote'));
+        tr.append(requirement);
+
+        const matched = row.status === 'matched';
+        tr.append(make('td', matched ? 'Подтверждено' : 'Нет подтверждения', matched ? 'yes' : 'no'));
+
+        const evidence = make('td');
+        evidence.append(make('div', row.resume_source_text || 'Явное упоминание в резюме не найдено.', 'quote'));
+        if (row.resume_page != null) {
+          evidence.append(make('div', `Страница резюме: ${row.resume_page}`, 'info'));
+        }
+        tr.append(evidence);
+
+        table.append(tr);
+      }
+
+      wrap.append(table);
+      return wrap;
+    }
+
+    // ==========================================================
+    // 3. Карточка вакансии
+    // ==========================================================
+    function makeVacancyCard(match) {
+      const vacancy = match.vacancy;
+      const card = make('article', '', 'vacancy');
+      const top = make('div', '', 'vacancy-top');
+      const heading = make('div');
+
+      heading.append(make('h3', vacancy.name));
+      heading.append(make('div', vacancy.employer, 'company'));
+
+      if (isSafeVacancyLink(vacancy.url)) {
+        const link = make('a', 'Открыть вакансию на hh.ru');
+        link.href = vacancy.url;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        heading.append(link);
+      }
+
+      top.append(heading);
+      top.append(make('span', match.score_percent == null ? 'н/д' : `${match.score_percent}%`, 'badge'));
+      card.append(top);
+
+      card.append(make(
+        'div',
+        `${match.matched_count} из ${match.scored_requirement_count} распознанных требований подтверждены · ${vacancy.experience || 'Опыт не указан'}`,
+        'vacancy-meta'
+      ));
+
+      if (match.score_percent != null) {
+        const meter = make('div', '', 'meter');
+        const fill = make('div');
+        fill.style.width = `${Math.max(0, Math.min(100, match.score_percent))}%`;
+        meter.append(fill);
+        card.append(meter);
+      }
+
+      const details = make('details');
+      details.append(make('summary', 'Матрица соответствия и подтверждающие цитаты'));
+      details.append(makeMatrix(match));
+
+      const otherRequirements = vacancy.other_requirements_for_review || [];
+      if (otherRequirements.length) {
+        const otherDetails = make('details');
+        otherDetails.append(make('summary', 'Другие требования — ручная проверка'));
+        const list = make('ul');
+        otherRequirements.forEach((text) => list.append(make('li', text)));
+        otherDetails.append(list);
+        details.append(otherDetails);
+      }
+
+      card.append(details);
+      return card;
+    }
+
+    // ==========================================================
+    // 4. Отображение результатов локального анализа
+    // ==========================================================
+    function renderResults(data) {
+      latest = data;
+      analyzedInputSnapshot = getCurrentInputSnapshot();
+
+      $('results').classList.remove('hidden');
+      $('source-info').textContent = `${data.source_label} · ${data.search_query}`;
+      $('stat-skills').textContent = data.summary.extracted_skills_count;
+      $('stat-vacancies').textContent = data.summary.vacancies_count;
+
+      const scores = data.matches
+        .map((match) => match.score_percent)
+        .filter((value) => typeof value === 'number');
+      $('stat-top').textContent = scores.length ? `${Math.max(...scores)}%` : '—';
+
+      const cards = $('vacancies');
+      cards.replaceChildren();
+      if (!data.matches.length) {
+        cards.append(make('p', 'Вакансии не найдены. Попробуйте другой запрос.'));
+      }
+      data.matches.forEach((match) => cards.append(makeVacancyCard(match)));
+
+      $('resume-json').textContent = JSON.stringify(data.resume, null, 2);
+      const vacancySelect = $('llm-vacancy-select');
+      vacancySelect.replaceChildren();
+      data.matches.forEach((match, index) => {
+        const option = make('option', match.vacancy.name || `Вакансия ${index + 1}`);
+        option.value = String(index);
+        vacancySelect.append(option);
+      });
+
+      // Предыдущие LLM-данные больше не относятся к новому анализу.
+      $('llm-consent').checked = false;
+      $('llm-status').textContent = '';
+      $('llm-status').classList.remove('error-text');
+      $('llm-output').classList.add('hidden');
+      $('llm-resume-json').textContent = '';
+      $('llm-vacancy-json').textContent = '';
+      $('llm-matching').classList.add('hidden');
+      resetSemantic();
+      resetExperience();
+
+      $('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ==========================================================
+    // 5. Базовый анализ: POST /api/analyze
+    // ==========================================================
+    async function runLocalAnalysis(event) {
+      event.preventDefault();
+
+      const button = $('run');
+      $('error').classList.add('hidden');
+      button.disabled = true;
+      button.textContent = 'Анализируем...';
+
+      try {
+        const snapshot = getCurrentInputSnapshot();
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          body: new FormData(event.currentTarget)
+        });
+        const data = await getJsonResponse(response);
+
+        // Пользователь мог изменить форму, пока сервер обрабатывал запрос.
+        if (snapshot !== getCurrentInputSnapshot()) {
+          throw new Error('Параметры формы изменились во время анализа. Запустите анализ повторно.');
+        }
+        renderResults(data);
+      } catch (error) {
+        $('error').textContent = error.message;
+        $('error').classList.remove('hidden');
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Проанализировать резюме';
+      }
+    }
+
+    // ==========================================================
+    // 6. Отображение матрицы из LLM JSON
+    // ==========================================================
+    function makeLlmTable(rows, title) {
+      const wrap = make('div', '', 'llm-match-table');
+      wrap.append(make('h4', title));
+      if (!rows || !rows.length) {
+        wrap.append(make('p', 'Требования этой категории не извлечены.'));
+        return wrap;
+      }
+
+      const table = make('table');
+      const header = make('tr');
+      ['Требование', 'Статус', 'Цитата вакансии', 'Цитата резюме'].forEach((text) => {
+        header.append(make('th', text));
+      });
+      table.append(header);
+
+      for (const row of rows) {
+        const tr = make('tr');
+        tr.append(make('td', row.requirement));
+
+        const labels = {
+          matched: 'Подтверждено по названию',
+          not_confirmed: 'Нет подтверждения',
+          manual_review: 'Ручная проверка'
+        };
+        const cls = row.status === 'matched' ? 'yes' :
+          row.status === 'manual_review' ? 'manual-review' : 'no';
+        const status = make('td', labels[row.status] || row.status, cls);
+        status.append(make('div', row.note || '', 'quote'));
+        tr.append(status);
+
+        const vacancyText = make('td');
+        vacancyText.append(make('div', row.vacancy_source_text || 'Цитата отсутствует', 'quote'));
+        if (row.vacancy_page != null) {
+          vacancyText.append(make('div', `Страница ${row.vacancy_page}`, 'info'));
+        }
+        tr.append(vacancyText);
+
+        const resumeText = make('td');
+        resumeText.append(make('div', row.resume_source_text || 'Не найдено', 'quote'));
+        if (row.resume_page != null) {
+          resumeText.append(make('div', `Страница ${row.resume_page}`, 'info'));
+        }
+        tr.append(resumeText);
+        table.append(tr);
+      }
+
+      wrap.append(table);
+      return wrap;
+    }
+
+    function renderLlmMatching(matrix) {
+      const summary = $('llm-match-summary');
+      const rows = $('llm-match-matrices');
+      summary.replaceChildren();
+      rows.replaceChildren();
+
+      const scoreText = matrix.score_percent == null
+        ? 'Оценка не рассчитана'
+        : `${matrix.score_percent}%`;
+      const box = make('div', '', 'llm-match-summary');
+      box.append(make('div', scoreText, 'llm-match-score'));
+      box.append(make(
+        'p',
+        `${matrix.required_matched} из ${matrix.required_total} обязательных навыков подтверждены; ` +
+        `${matrix.optional_matched} из ${matrix.optional_total} желательных подтверждены. ` +
+        'Стаж, обязанности и условия пока не входят в процент.'
+      ));
+      if (matrix.required_review_total) {
+        box.append(make('p',
+          `Требований для ручной проверки: ${matrix.required_review_total}. ` +
+          'Итоговый процент скрыт до проверки цитат.', 'manual-review'));
+      }
+      summary.append(box);
+
+      rows.append(makeLlmTable(matrix.required_matrix, 'Обязательные навыки'));
+      rows.append(makeLlmTable(matrix.optional_matrix, 'Желательные навыки (в процент не входят)'));
+
+      const experience = matrix.not_scored?.experience || [];
+      if (experience.length) {
+        const details = make('details');
+        details.append(make('summary', 'Требования к стажу — для ручной проверки'));
+        const list = make('ul');
+        for (const fact of experience) {
+          const item = make('li', fact.value || 'Неизвестно');
+          item.append(make('div', fact.source_text || '', 'quote'));
+          list.append(item);
+        }
+        details.append(list);
+        rows.append(details);
+      }
+      $('llm-match-disclaimer').textContent = matrix.disclaimer || '';
+      $('llm-matching').classList.remove('hidden');
+    }
+
+    // ==========================================================
+    // 7. LLM-анализ: два платных запроса, затем локальное сопоставление
+    // ==========================================================
+    function setLlmStatus(text, isError = false) {
+      const status = $('llm-status');
+      status.textContent = text;
+      status.classList.toggle('error-text', isError);
+    }
+
+    async function runLlmAnalysis() {
+      const button = $('run-llm');
+
+      if (!latest || !latest.matches.length) {
+        setLlmStatus('Сначала выполните базовый анализ с хотя бы одной вакансией.', true);
+        return;
+      }
+      if (analyzedInputSnapshot !== getCurrentInputSnapshot()) {
+        setLlmStatus('Вы изменили резюме или параметры поиска. Сначала повторите базовый анализ.', true);
+        return;
+      }
+      if (!$('llm-consent').checked) {
+        setLlmStatus('Для обращения к OpenAI нужно ваше согласие на передачу текста.', true);
+        return;
+      }
+
+      const file = $('resume').files[0];
+      if (!file) {
+        setLlmStatus('Выберите файл резюме.', true);
+        return;
+      }
+
+      button.disabled = true;
+      $('llm-output').classList.add('hidden');
+      $('llm-resume-json').textContent = '';
+      $('llm-vacancy-json').textContent = '';
+      $('llm-matching').classList.add('hidden');
+      resetSemantic();
+      resetExperience();
+      delete latest.llm;
+
+      try {
+        // 6.1. Извлекаем факты из резюме.
+        setLlmStatus('OpenAI извлекает данные резюме...');
+        const form = new FormData();
+        form.append('resume', file);
+        form.append('cloud_consent', 'true');
+
+        const resumeResponse = await fetch('/api/llm/resume', {
+          method: 'POST',
+          body: form
+        });
+        const resumeData = await getJsonResponse(resumeResponse);
+
+        // 6.2. Извлекаем требования первой вакансии.
+        setLlmStatus('OpenAI извлекает требования первой вакансии...');
+        const selectedIndex = Number($('llm-vacancy-select').value);
+        const vacancy = latest.matches[selectedIndex]?.vacancy;
+        if (!vacancy) throw new Error('Выберите вакансию для LLM-анализа.');
+
+        const vacancyResponse = await fetch('/api/llm/vacancy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description_text: vacancy.description_text || '',
+            key_skills: vacancy.key_skills || [],
+            cloud_consent: true
+          })
+        });
+        const vacancyData = await getJsonResponse(vacancyResponse);
+
+        // 6.3. Сохраняем LLM JSON рядом с результатом обычного анализа.
+        latest.llm = {
+          resume: resumeData.extraction,
+          vacancy: vacancyData,
+          vacancy_id: vacancy.id,
+          vacancy_name: vacancy.name
+        };
+
+        // textContent: выводим JSON как текст, не исполняя HTML из документов.
+        $('llm-resume-json').textContent = JSON.stringify(latest.llm.resume, null, 2);
+        $('llm-vacancy-json').textContent = JSON.stringify(latest.llm.vacancy, null, 2);
+        $('llm-output').classList.remove('hidden');
+
+        // 6.4. Бесплатный локальный расчёт матрицы без обращения к OpenAI.
+        setLlmStatus('JSON получены. Формируем матрицу соответствия...');
+        const matchResponse = await fetch('/api/llm/match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            resume: latest.llm.resume,
+            vacancy: latest.llm.vacancy
+          })
+        });
+        const matrix = await getJsonResponse(matchResponse);
+
+        if (analyzedInputSnapshot !== getCurrentInputSnapshot() ||
+            Number($('llm-vacancy-select').value) !== selectedIndex) {
+          throw new Error('Параметры поиска или выбранная вакансия изменились. Повторите LLM-анализ.');
+        }
+        latest.llm.match = matrix;
+        renderLlmMatching(matrix);
+        $('semantic-panel').classList.remove('hidden');
+        $('experience-panel').classList.remove('hidden');
+        setLlmStatus('Готово: LLM-извлечение и локальная матрица сформированы.');
+      } catch (error) {
+        setLlmStatus(`Ошибка LLM-анализа: ${error.message}`, true);
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    // ==========================================================
+    // 8. Семантическая проверка: отдельное согласие + платный запрос
+    // ==========================================================
+    function resetSemantic() {
+      $('semantic-consent').checked = false;
+      $('semantic-panel').classList.add('hidden');
+      $('semantic-results').classList.add('hidden');
+      $('semantic-results').replaceChildren();
+      $('semantic-status').textContent = '';
+      $('semantic-status').classList.remove('error-text');
+    }
+
+    function semanticResultLabel(row) {
+      if (row.status === 'matched') return ['Точное совпадение', ''];
+      if (row.status === 'semantic_suggestion') return ['Предложено LLM', ''];
+      if (row.status === 'partial_suggestion') return ['Частично', 'partial'];
+      if (row.status === 'manual_review') return ['Проверить источник', 'unknown'];
+      return ['Нет подтверждения', 'unknown'];
+    }
+
+    function semanticEvidenceBlock(label, quote, meta = '') {
+      const block = make('div', '', 'semantic-evidence');
+      block.append(make('strong', label));
+      block.append(make('q', quote || 'Нет цитаты'));
+      if (meta) block.append(make('div', meta, 'info'));
+      return block;
+    }
+
+    function semanticResultCard(row) {
+      const wrap = make('article', '', 'semantic-item');
+      const head = make('div', '', 'semantic-item-head');
+      head.append(make('strong', row.requirement));
+      const [label, extraClass] = semanticResultLabel(row);
+      head.append(make('span', label, `semantic-pill ${extraClass}`));
+      wrap.append(head);
+      if (row.semantic_explanation) {
+        wrap.append(make('p', row.semantic_explanation, 'semantic-note'));
+      } else if (row.note) {
+        wrap.append(make('p', row.note, 'semantic-note'));
+      }
+      const detail = make('details');
+      detail.append(make('summary', 'Показать исходные доказательства'));
+      detail.append(semanticEvidenceBlock('Вакансия:', row.vacancy_source_text,
+        row.vacancy_page == null ? '' : `Страница ${row.vacancy_page}`));
+      if (row.resume_source_text) {
+        detail.append(semanticEvidenceBlock('Резюме (точное совпадение):', row.resume_source_text,
+          row.resume_page == null ? '' : `Страница ${row.resume_page}`));
+      }
+      for (const evidence of row.semantic_evidence || []) {
+        detail.append(semanticEvidenceBlock(
+          `Резюме (${evidence.category}: ${evidence.value})`, evidence.quote,
+          evidence.page == null ? '' : `Страница ${evidence.page}`));
+      }
+      wrap.append(detail);
+      return wrap;
+    }
+
+    function renderSemanticMatching(matrix) {
+      const target = $('semantic-results');
+      target.replaceChildren();
+      const summary = make('div', '', 'semantic-summary');
+      const exact = make('div', '', 'semantic-stat');
+      exact.append(make('b', matrix.score_percent == null ? '—' : `${matrix.score_percent}%`));
+      exact.append(make('span', 'Только точные совпадения (без изменения)'));
+      summary.append(exact);
+      const suggested = make('div', '', 'semantic-stat');
+      suggested.append(make('b', matrix.semantic_score_percent == null ? '—' : `${matrix.semantic_score_percent}%`));
+      suggested.append(make('span', 'С учётом предложений LLM — предварительно'));
+      summary.append(suggested);
+      target.append(summary);
+      target.append(make('p',
+        `Предложено новых совпадений: ${matrix.semantic_suggested_required}. ` +
+        `Частичных: ${matrix.semantic_partial_required}. ` +
+        'Требуется проверка человеком.', 'info'));
+
+      const required = make('section');
+      required.append(make('h3', 'Обязательные навыки'));
+      for (const row of matrix.required_matrix || []) required.append(semanticResultCard(row));
+      target.append(required);
+
+      if (matrix.optional_matrix?.length) {
+        const optional = make('section');
+        optional.append(make('h3', 'Желательные навыки (в процент не входят)'));
+        for (const row of matrix.optional_matrix) optional.append(semanticResultCard(row));
+        target.append(optional);
+      }
+
+      if (matrix.experience_reviews?.length) {
+        const exp = make('section');
+        exp.append(make('h3', 'Стаж — анализ без начисления баллов'));
+        for (const item of matrix.experience_reviews) {
+          const labels = { supported: 'Есть подтверждение', partial: 'Частично', unsupported: 'Недостаточно данных' };
+          const node = make('article', '', 'semantic-item');
+          node.append(make('strong', item.requirement));
+          node.append(make('p', `${labels[item.verdict] || 'Проверить'}: ${item.reason}`, 'semantic-note'));
+          const details = make('details');
+          details.append(make('summary', 'Показать цитаты'));
+          details.append(semanticEvidenceBlock('Требование вакансии:', item.vacancy_source_text,
+            item.vacancy_page == null ? '' : `Страница ${item.vacancy_page}`));
+          for (const ev of item.evidence || []) details.append(semanticEvidenceBlock('Резюме:', ev.quote,
+            ev.page == null ? '' : `Страница ${ev.page}`));
+          node.append(details);
+          exp.append(node);
+        }
+        target.append(exp);
+      }
+      target.append(make('p', matrix.semantic_disclaimer || '', 'notice'));
+      target.classList.remove('hidden');
+    }
+
+    async function runSemanticMatching() {
+      if (!latest?.llm?.match || !latest.llm.resume || !latest.llm.vacancy) {
+        $('semantic-status').textContent = 'Сначала выполните LLM-анализ и локальную матрицу.';
+        return;
+      }
+      if (analyzedInputSnapshot !== getCurrentInputSnapshot()) {
+        $('semantic-status').textContent = 'Форма изменилась: повторите базовый и LLM-анализ.';
+        return;
+      }
+      if (!$('semantic-consent').checked) {
+        $('semantic-status').textContent = 'Для дополнительной отправки цитат требуется согласие.';
+        return;
+      }
+      const button = $('run-semantic');
+      const savedLatest = latest;
+      button.disabled = true;
+      $('run-llm').disabled = true;
+      $('semantic-results').classList.add('hidden');
+      $('semantic-status').classList.remove('error-text');
+      $('semantic-status').textContent = 'OpenAI анализирует спорные требования и цитаты...';
+      try {
+        const response = await fetch('/api/llm/semantic-match', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            resume: savedLatest.llm.resume,
+            vacancy: savedLatest.llm.vacancy,
+            cloud_consent: true
+          })
+        });
+        const semantic = await getJsonResponse(response);
+        if (savedLatest !== latest || analyzedInputSnapshot !== getCurrentInputSnapshot()) {
+          throw new Error('Входные данные изменились во время запроса. Повторите анализ.');
+        }
+        latest.llm.semantic = semantic;
+        renderSemanticMatching(semantic);
+        $('semantic-status').textContent = 'Предложения LLM готовы. Для окончательной оценки нужна ручная проверка.';
+      } catch (error) {
+        $('semantic-status').textContent = `Ошибка семантической проверки: ${error.message}`;
+        $('semantic-status').classList.add('error-text');
+      } finally {
+        button.disabled = false;
+        $('run-llm').disabled = false;
+      }
+    }
+
+
+    // ==========================================================
+    // 9. v0.5: хронология работы и проверка обязанностей
+    // ==========================================================
+    function resetExperience() {
+      $('experience-consent').checked = false;
+      $('experience-panel').classList.add('hidden');
+      $('experience-results').classList.add('hidden');
+      $('experience-results').replaceChildren();
+      $('experience-status').textContent = '';
+      $('experience-status').classList.remove('error-text');
+    }
+
+    function experienceQuote(title, quote, page = null) {
+      const item = make('div', '', 'experience-evidence');
+      item.append(make('strong', `${title}: `));
+      item.append(make('span', quote || 'Цитата не найдена'));
+      if (page != null) item.append(make('span', ` · стр. ${page}`, 'info'));
+      return item;
+    }
+
+    function renderExperience(data) {
+      const target = $('experience-results');
+      target.replaceChildren();
+      const cards = make('div', '', 'experience-stats');
+      const totals = [
+        [`${data.summary.jobs_extracted}`, 'Записей о работе'],
+        [`${data.summary.jobs_with_verified_dates}`, 'С подтверждёнными датами'],
+        [data.summary.documented_months_total_conservative == null
+          ? '—' : `${data.summary.documented_months_total_conservative}`, 'Месяцев по непересекающимся периодам']
+      ];
+      for (const [number, label] of totals) {
+        const card = make('div', '', 'experience-stat');
+        card.append(make('b', number));
+        card.append(make('span', label));
+        cards.append(card);
+      }
+      target.append(cards);
+      if (data.input_truncated) target.append(make('p', 'Резюме сокращено по лимиту символов; часть опыта могла не попасть в анализ.', 'manual-review'));
+
+      const heading = make('h3', 'Хронология опыта');
+      target.append(heading);
+      if (!data.jobs.length) target.append(make('p', 'Подтверждённых записей об опыте не извлечено.'));
+      for (const job of data.jobs || []) {
+        const card = make('article', '', 'experience-card');
+        const header = make('div', '', 'experience-row');
+        header.append(make('h4', job.role || 'Должность неизвестна'));
+        const ok = job.dates_verified;
+        header.append(make('span', ok ? 'Даты сверены с цитатой' : 'Проверить даты',
+          `experience-tag ${ok ? '' : 'warn'}`));
+        card.append(header);
+        card.append(make('p', `${job.start_month || '?'} — ${job.is_current ? 'н.в.' : (job.end_month || '?')}`,
+          'experience-evidence'));
+        if (ok && job.conservative_months != null)
+          card.append(make('p', `Консервативный подсчёт: ${job.conservative_months} мес. (конечный месяц не учтён)`, 'info'));
+        card.append(experienceQuote('Должность', job.role_source_text, job.role_page));
+        card.append(experienceQuote('Даты', job.period_source_text, job.period_page));
+        const detail = make('details');
+        detail.append(make('summary', 'Обязанности и технологии с цитатами'));
+        for (const task of job.tasks || []) {
+          detail.append(experienceQuote(`Задача: ${task.value}${task.source_verified ? '' : ' (не подтверждена)'}`,
+            task.source_text, task.page));
+        }
+        for (const skill of job.technologies || []) {
+          detail.append(experienceQuote(`Технология: ${skill.value}${skill.source_verified ? '' : ' (не подтверждена)'}`,
+            skill.source_text, skill.page));
+        }
+        card.append(detail);
+        target.append(card);
+      }
+
+      target.append(make('h3', 'Сопоставление требований к стажу'));
+      if (!(data.experience_requirements || []).length)
+        target.append(make('p', 'Числовые требования к стажу в вакансии не извлечены.'));
+      const statLabels = {
+        duration_meets_provisionally: 'Длительность предварительно достаточна',
+        documented_duration_below: 'Подтверждённый период короче требования',
+        insufficient_data: 'Недостаточно датированных данных',
+        manual_review: 'Нужна ручная проверка',
+        source_unverified: 'Не подтверждена цитата вакансии'
+      };
+      for (const req of data.experience_requirements || []) {
+        const card = make('article', '', 'experience-card');
+        card.append(make('h4', req.requirement));
+        card.append(make('div', statLabels[req.status] || 'Проверить', 'experience-tag warn'));
+        if (req.required_months != null)
+          card.append(make('p', `Требуется: ${req.required_months} мес. · Документировано: ${req.documented_months ?? 'неизвестно'} мес.`, 'info'));
+        card.append(experienceQuote('Вакансия', req.vacancy_source_text));
+        card.append(make('p', req.note || '', 'info'));
+        target.append(card);
+      }
+
+      target.append(make('h3', 'Сопоставление обязанностей · предложения LLM'));
+      if (!(data.responsibility_reviews || []).length)
+        target.append(make('p', 'Обязанности вакансии не извлечены.'));
+      const verdictLabels = { supported:'Возможно соответствует', partial:'Частично',
+        unsupported:'Нет подтверждения', source_unverified:'Цитата вакансии не подтверждена' };
+      for (const req of data.responsibility_reviews || []) {
+        const card = make('article', '', 'experience-card');
+        card.append(make('h4', req.requirement));
+        card.append(make('p', `${verdictLabels[req.verdict] || 'Проверить'} · ${req.explanation || ''}`, 'info'));
+        const details = make('details');
+        details.append(make('summary', 'Исходные доказательства'));
+        details.append(experienceQuote('Вакансия', req.vacancy_source_text));
+        for (const ev of req.evidence || []) details.append(experienceQuote('Резюме', ev.quote, ev.page));
+        card.append(details);
+        target.append(card);
+      }
+      target.append(make('p', data.disclaimer || '', 'notice'));
+      target.classList.remove('hidden');
+    }
+
+    async function runExperienceAnalysis() {
+      const status = $('experience-status');
+      if (!latest?.llm?.vacancy || !latest?.llm?.match) {
+        status.textContent = 'Сначала выполните LLM-анализ вакансии и резюме.';
+        return;
+      }
+      if (analyzedInputSnapshot !== getCurrentInputSnapshot()) {
+        status.textContent = 'Исходные данные изменились: повторите базовый и LLM-анализ.';
+        return;
+      }
+      if (!$('experience-consent').checked) {
+        status.textContent = 'Нужно согласие на дополнительную передачу резюме в OpenAI.';
+        return;
+      }
+      const selectedIndex = Number($('llm-vacancy-select').value);
+      const vacancy = latest.matches[selectedIndex]?.vacancy;
+      const file = $('resume').files[0];
+      if (!file || !vacancy || vacancy.id !== latest.llm.vacancy_id) {
+        status.textContent = 'Выбранная вакансия изменилась: повторите LLM-извлечение.';
+        return;
+      }
+      const button = $('run-experience');
+      const originalLatest = latest;
+      button.disabled = true;
+      $('run-llm').disabled = true;
+      $('run-semantic').disabled = true;
+      status.classList.remove('error-text');
+      status.textContent = 'OpenAI извлекает датированные места работы и сравнивает обязанности...';
+      $('experience-results').classList.add('hidden');
+      try {
+        const form = new FormData();
+        form.append('resume', file);
+        form.append('vacancy_extraction', JSON.stringify(latest.llm.vacancy));
+        form.append('vacancy_source', JSON.stringify({
+          description_text: vacancy.description_text || '',
+          key_skills: vacancy.key_skills || []
+        }));
+        form.append('cloud_consent', 'true');
+        const response = await fetch('/api/llm/experience-match', { method: 'POST', body: form });
+        const result = await getJsonResponse(response);
+        if (originalLatest !== latest || analyzedInputSnapshot !== getCurrentInputSnapshot() ||
+          selectedIndex !== Number($('llm-vacancy-select').value))
+          throw new Error('Данные изменились во время запроса. Повторите анализ.');
+        latest.llm.experience = result;
+        renderExperience(result);
+        status.textContent = `Анализ завершён. Запросов к OpenAI: ${result.summary.llm_request_count}. Даты и смысловые выводы требуют проверки.`;
+      } catch (error) {
+        status.textContent = `Ошибка анализа опыта: ${error.message}`;
+        status.classList.add('error-text');
+      } finally {
+        button.disabled = false;
+        $('run-llm').disabled = false;
+        $('run-semantic').disabled = false;
+      }
+    }
+
+    // ==========================================================
+    // 8. Обработчики событий
+    // ==========================================================
+    $('form').addEventListener('submit', runLocalAnalysis);
+    $('run-llm').addEventListener('click', runLlmAnalysis);
+    $('run-semantic').addEventListener('click', runSemanticMatching);
+    $('run-experience').addEventListener('click', runExperienceAnalysis);
+    $('llm-vacancy-select').addEventListener('change', () => {
+      if (latest) delete latest.llm;
+      $('llm-output').classList.add('hidden');
+      $('llm-resume-json').textContent = '';
+      $('llm-vacancy-json').textContent = '';
+      $('llm-matching').classList.add('hidden');
+      resetSemantic();
+      resetExperience();
+      setLlmStatus('Выбрана другая вакансия. Запустите LLM-анализ заново.');
+    });
+    $('download').addEventListener('click', () => {
+      if (latest) downloadJson(latest, 'resumematch-analysis.json');
+    });
+  </script>
+</body>
+</html>

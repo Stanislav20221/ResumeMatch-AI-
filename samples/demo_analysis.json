@@ -1,0 +1,513 @@
+{
+  "mode": "demo",
+  "source_label": "Синтетические вакансии (демо)",
+  "search_query": "Python разработчик",
+  "resume": {
+    "filename": "demo_resume.txt",
+    "format": "txt",
+    "text_length": 303,
+    "skills": [
+      {
+        "name": "Django",
+        "matched_text": "Django",
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "name": "Django REST Framework",
+        "matched_text": "Django REST Framework",
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "name": "Docker",
+        "matched_text": "Docker",
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "name": "FAISS",
+        "matched_text": "FAISS",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "FastAPI",
+        "matched_text": "FastAPI",
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "name": "Git",
+        "matched_text": "Git",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "LangChain",
+        "matched_text": "LangChain",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "OpenAI API",
+        "matched_text": "OpenAI API",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "PostgreSQL",
+        "matched_text": "PostgreSQL",
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "name": "Python",
+        "matched_text": "Python",
+        "source_text": "Python-разработчик",
+        "page": null
+      },
+      {
+        "name": "RAG",
+        "matched_text": "RAG",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "REST API",
+        "matched_text": "REST API",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "name": "SQL",
+        "matched_text": "SQL",
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      }
+    ],
+    "source_blocks": [
+      {
+        "source_text": "Алексей Примеров",
+        "page": null
+      },
+      {
+        "source_text": "Python-разработчик",
+        "page": null
+      },
+      {
+        "source_text": "Навыки:",
+        "page": null
+      },
+      {
+        "source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+        "page": null
+      },
+      {
+        "source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+        "page": null
+      },
+      {
+        "source_text": "Проекты:",
+        "page": null
+      },
+      {
+        "source_text": "Разработал AI-консультанта с RAG и FAISS для каталога товаров.",
+        "page": null
+      },
+      {
+        "source_text": "Создавал backend-сервисы на FastAPI и Django с базой данных PostgreSQL.",
+        "page": null
+      }
+    ],
+    "extraction_method": "local_rules_and_keyword_aliases",
+    "notice": "Навыки определяются только по явным упоминаниям; текст не отправляется в LLM."
+  },
+  "matches": [
+    {
+      "vacancy": {
+        "id": "demo-1",
+        "name": "Python / RAG разработчик",
+        "employer": "Пример: ТехЛаб",
+        "url": "",
+        "experience": "1–3 года",
+        "salary": null,
+        "description_text": "Требования: Python, FastAPI, RAG, FAISS, Docker, PostgreSQL. Плюсом будет опыт построения REST API.",
+        "key_skills": [
+          "Python",
+          "FastAPI",
+          "RAG",
+          "FAISS",
+          "Docker",
+          "PostgreSQL"
+        ],
+        "requirements": [
+          {
+            "skill": "Docker",
+            "source_text": "Docker",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "FAISS",
+            "source_text": "FAISS",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "FastAPI",
+            "source_text": "FastAPI",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "PostgreSQL",
+            "source_text": "PostgreSQL",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Python",
+            "source_text": "Python",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "RAG",
+            "source_text": "RAG",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "REST API",
+            "source_text": "Требования: Python, FastAPI, RAG, FAISS, Docker, PostgreSQL. Плюсом будет опыт построения REST API.",
+            "source_field": "description"
+          }
+        ],
+        "other_requirements_for_review": [
+          "Требования: Python, FastAPI, RAG, FAISS, Docker, PostgreSQL. Плюсом будет опыт построения REST API."
+        ],
+        "extraction_method": "hh_api_fields_plus_local_keyword_aliases"
+      },
+      "score_percent": 100,
+      "matched_count": 7,
+      "scored_requirement_count": 7,
+      "matrix": [
+        {
+          "requirement": "Docker",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Docker",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "FAISS",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "FAISS",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "FastAPI",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "FastAPI",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "PostgreSQL",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "PostgreSQL",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "Python",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Python",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python-разработчик",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "RAG",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "RAG",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "REST API",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Требования: Python, FastAPI, RAG, FAISS, Docker, PostgreSQL. Плюсом будет опыт построения REST API.",
+          "vacancy_source_field": "description",
+          "vacancy_url": "",
+          "resume_source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        }
+      ],
+      "limitations": "Эвристическая доля явно упомянутых навыков из известных словарю. Не является вероятностью найма и не оценивает стаж, глубину опыта, контекст, зарплату, личные качества и требования вне словаря. Отсутствие подтверждения в резюме не означает отсутствие навыка."
+    },
+    {
+      "vacancy": {
+        "id": "demo-2",
+        "name": "Backend-разработчик Django",
+        "employer": "Пример: ВебСистемы",
+        "url": "",
+        "experience": "1–3 года",
+        "salary": null,
+        "description_text": "Ожидаем знание Django REST Framework, Redis, Celery и PostgreSQL.",
+        "key_skills": [
+          "Python",
+          "Django",
+          "DRF",
+          "Postgres",
+          "Redis",
+          "Celery"
+        ],
+        "requirements": [
+          {
+            "skill": "Celery",
+            "source_text": "Celery",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Django",
+            "source_text": "Django",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Django REST Framework",
+            "source_text": "DRF",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "PostgreSQL",
+            "source_text": "Postgres",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Python",
+            "source_text": "Python",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Redis",
+            "source_text": "Redis",
+            "source_field": "key_skills"
+          }
+        ],
+        "other_requirements_for_review": [
+          "Ожидаем знание Django REST Framework, Redis, Celery и PostgreSQL."
+        ],
+        "extraction_method": "hh_api_fields_plus_local_keyword_aliases"
+      },
+      "score_percent": 67,
+      "matched_count": 4,
+      "scored_requirement_count": 6,
+      "matrix": [
+        {
+          "requirement": "Celery",
+          "status": "no_evidence",
+          "source_verified": true,
+          "vacancy_source_text": "Celery",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": null,
+          "resume_page": null,
+          "match_type": null
+        },
+        {
+          "requirement": "Django",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Django",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "Django REST Framework",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "DRF",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "PostgreSQL",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Postgres",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "Python",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Python",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python-разработчик",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "Redis",
+          "status": "no_evidence",
+          "source_verified": true,
+          "vacancy_source_text": "Redis",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": null,
+          "resume_page": null,
+          "match_type": null
+        }
+      ],
+      "limitations": "Эвристическая доля явно упомянутых навыков из известных словарю. Не является вероятностью найма и не оценивает стаж, глубину опыта, контекст, зарплату, личные качества и требования вне словаря. Отсутствие подтверждения в резюме не означает отсутствие навыка."
+    },
+    {
+      "vacancy": {
+        "id": "demo-3",
+        "name": "ML-инженер",
+        "employer": "Пример: DataWorks",
+        "url": "",
+        "experience": "3–6 лет",
+        "salary": null,
+        "description_text": "Опыт разработки моделей на PyTorch. Работа с Kubernetes и SQL.",
+        "key_skills": [
+          "Python",
+          "PyTorch",
+          "TensorFlow",
+          "Kubernetes",
+          "SQL"
+        ],
+        "requirements": [
+          {
+            "skill": "Kubernetes",
+            "source_text": "Kubernetes",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "Python",
+            "source_text": "Python",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "PyTorch",
+            "source_text": "PyTorch",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "SQL",
+            "source_text": "SQL",
+            "source_field": "key_skills"
+          },
+          {
+            "skill": "TensorFlow",
+            "source_text": "TensorFlow",
+            "source_field": "key_skills"
+          }
+        ],
+        "other_requirements_for_review": [
+          "Опыт разработки моделей на PyTorch. Работа с Kubernetes и SQL."
+        ],
+        "extraction_method": "hh_api_fields_plus_local_keyword_aliases"
+      },
+      "score_percent": 40,
+      "matched_count": 2,
+      "scored_requirement_count": 5,
+      "matrix": [
+        {
+          "requirement": "Kubernetes",
+          "status": "no_evidence",
+          "source_verified": true,
+          "vacancy_source_text": "Kubernetes",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": null,
+          "resume_page": null,
+          "match_type": null
+        },
+        {
+          "requirement": "Python",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "Python",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "Python-разработчик",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "PyTorch",
+          "status": "no_evidence",
+          "source_verified": true,
+          "vacancy_source_text": "PyTorch",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": null,
+          "resume_page": null,
+          "match_type": null
+        },
+        {
+          "requirement": "SQL",
+          "status": "matched",
+          "source_verified": true,
+          "vacancy_source_text": "SQL",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": "RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.",
+          "resume_page": null,
+          "match_type": "explicit_skill_or_alias"
+        },
+        {
+          "requirement": "TensorFlow",
+          "status": "no_evidence",
+          "source_verified": true,
+          "vacancy_source_text": "TensorFlow",
+          "vacancy_source_field": "key_skills",
+          "vacancy_url": "",
+          "resume_source_text": null,
+          "resume_page": null,
+          "match_type": null
+        }
+      ],
+      "limitations": "Эвристическая доля явно упомянутых навыков из известных словарю. Не является вероятностью найма и не оценивает стаж, глубину опыта, контекст, зарплату, личные качества и требования вне словаря. Отсутствие подтверждения в резюме не означает отсутствие навыка."
+    }
+  ],
+  "summary": {
+    "vacancies_count": 3,
+    "extracted_skills_count": 13
+  },
+  "data_policy": "Резюме обрабатывается локально без постоянного хранения; на hh.ru передаётся только поисковый запрос."
+}

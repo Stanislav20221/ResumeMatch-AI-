@@ -1,0 +1,10 @@
+Алексей Примеров
+Python-разработчик
+
+Навыки:
+Python, FastAPI, Django, Django REST Framework, PostgreSQL, Docker.
+RAG, FAISS, LangChain, OpenAI API, REST API, SQL, Git.
+
+Проекты:
+Разработал AI-консультанта с RAG и FAISS для каталога товаров.
+Создавал backend-сервисы на FastAPI и Django с базой данных PostgreSQL.
