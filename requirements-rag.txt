@@ -1,0 +1,3 @@
+# Дополнительные зависимости к requirements.txt для RAG v0.6
+faiss-cpu>=1.13,<2
+numpy>=2.0,<3

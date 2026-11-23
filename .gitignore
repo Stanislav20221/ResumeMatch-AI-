@@ -31,3 +31,8 @@ uploads/
 
 # Logs
 *.log
+# Local backups created by the RAG installer
+*.before_rag_v06
+
+# Резервные копии установщика v0.7
+*.before_evidence_v07

@@ -1,0 +1,19 @@
+/* EVIDENCE_V07_CSS_START */
+.evidence-panel { margin-top: 28px; border-top: 2px solid #dce8f7; padding-top: 22px; }
+.evidence-summary { display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; margin:14px 0; }
+.evidence-summary > div {background:#f1f6fd; padding:15px; border-radius:12px;}
+.evidence-summary b {display:block; color:#20436b; font-size:24px;}
+.evidence-summary span {font-size:12px; color:#61758a;}
+.evidence-row {border:1px solid #e0e8f2; border-radius:11px; margin:10px 0; padding:15px;}
+.evidence-row-header {display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.evidence-row-header strong {font-size:14px;}
+.evidence-status {border-radius:7px; background:#f1f3f6; color:#475569; font-size:12px; padding:5px 9px; font-weight:700;}
+.evidence-status.exact_mention {background:#e6f4eb; color:#266244;}
+.evidence-status.duration_provisional,.evidence-status.semantic_proposal {background:#e8f1fc; color:#24518e;}
+.evidence-status.partial_proposal,.evidence-status.documented_below {background:#fff1d8; color:#875310;}
+.evidence-source {white-space:pre-wrap; overflow-wrap:anywhere; border-top:1px solid #e8edf4; margin-top:8px; padding-top:8px; font-size:13px;}
+.evidence-source b {color:#30465f;}
+.evidence-detail {font-size:12px; color:#5c6e84; margin:9px 0 0;}
+.evidence-panel details {margin-top:10px;}
+@media(max-width:760px) {.evidence-summary {grid-template-columns:1fr;}}
+/* EVIDENCE_V07_CSS_END */
