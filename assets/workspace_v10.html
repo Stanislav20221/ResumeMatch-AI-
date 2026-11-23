@@ -1,0 +1,54 @@
+      <!-- WORKSPACE_V10_HTML_START -->
+      <section id="workspace-panel" class="panel workspace-panel" aria-labelledby="workspace-title">
+        <h2 id="workspace-title">Кандидаты, вакансии и история · v1.0</h2>
+        <p class="info">Локальная история проверок: SQLite с шифрованием Fernet, отдельный ключ доступа и автоматическое удаление снимков через 30 дней (по умолчанию). Исходные файлы резюме не сохраняются.</p>
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="workspace-token">Ключ доступа к локальной истории (из RESUMEMATCH_WORKSPACE_TOKEN)</label>
+            <input id="workspace-token" type="password" autocomplete="off" placeholder="Ключ из .env не сохраняется в браузере" />
+          </div>
+        </div>
+        <div class="action">
+          <button type="button" id="workspace-connect">Открыть историю</button>
+          <button type="button" id="workspace-logout" class="secondary" disabled>Закрыть доступ</button>
+        </div>
+        <p id="workspace-status" class="info status" role="status" aria-live="polite"></p>
+        <div id="workspace-content" class="hidden">
+          <h3>Сохранить результаты текущей проверки</h3>
+          <p class="info">Отчёт сохраняется только по кнопке. При сохранении матрица повторно проверяется по текущим исходным файлам; при открытии истории повторной проверки уже не происходит.</p>
+          <label class="consent" for="workspace-consent">
+            <input id="workspace-consent" type="checkbox" />
+            <span>Я разрешаю сохранить текстовые результаты и цитаты из резюме в локальной зашифрованной базе. Подтверждаю, что имею право обрабатывать эти данные.</span>
+          </label>
+          <div class="action">
+            <button type="button" id="workspace-save-report" class="secondary">Сохранить одиночный отчёт v0.8</button>
+            <button type="button" id="workspace-save-batch" class="secondary">Сохранить пакетную матрицу v0.9</button>
+          </div>
+          <h3>История анализов</h3>
+          <div class="action"><button type="button" id="workspace-refresh" class="secondary">Обновить историю</button></div>
+          <div id="workspace-archives"></div>
+          <div id="workspace-archive-detail" class="hidden"></div>
+          <div class="workspace-two-cols">
+            <div>
+              <h3>Кандидаты</h3>
+              <div class="field"><label for="workspace-candidate-name">Имя / метка</label>
+                <input id="workspace-candidate-name" maxlength="120" placeholder="Кандидат 01"></div>
+              <div class="field"><label for="workspace-candidate-note">Заметка</label>
+                <input id="workspace-candidate-note" maxlength="1000" placeholder="Для внутреннего использования"></div>
+              <div class="action"><button type="button" id="workspace-add-candidate" class="secondary">Добавить кандидата</button></div>
+              <div id="workspace-candidates"></div>
+            </div>
+            <div>
+              <h3>Вакансии</h3>
+              <div class="field"><label for="workspace-vacancy-title">Название вакансии</label>
+                <input id="workspace-vacancy-title" maxlength="180" placeholder="Python Backend"></div>
+              <div class="field"><label for="workspace-vacancy-description">Описание</label>
+                <textarea id="workspace-vacancy-description" rows="3" maxlength="24000"></textarea></div>
+              <div class="action"><button type="button" id="workspace-add-vacancy" class="secondary">Добавить вакансию</button></div>
+              <div id="workspace-vacancies"></div>
+            </div>
+          </div>
+          <p class="notice">Только для локального персонального использования на 127.0.0.1. Это не многопользовательский сервис. История не хранит PDF, DOCX и TXT, а архивный снимок не является повторно проверенным доказательством.</p>
+        </div>
+      </section>
+      <!-- WORKSPACE_V10_HTML_END -->

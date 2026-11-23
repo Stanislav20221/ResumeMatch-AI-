@@ -1,0 +1,14 @@
+/* WORKSPACE_V10_CSS_START */
+.workspace-panel .workspace-two-cols {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:16px}
+.workspace-panel .workspace-item {padding:12px 14px;border:1px solid #dce4ed;border-radius:10px;margin:9px 0;background:#f8fafc}
+.workspace-panel .workspace-item p{margin:5px 0;color:#526175;font-size:13px}
+.workspace-panel .workspace-item .workspace-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.workspace-panel .workspace-item button{padding:7px 12px;font-size:12px}
+.workspace-panel .workspace-archive-grid{max-width:100%;overflow-x:auto;margin-top:10px}
+.workspace-panel .workspace-archive-grid table{min-width:620px;width:100%;border-collapse:collapse}
+.workspace-panel .workspace-archive-grid td,.workspace-panel .workspace-archive-grid th{padding:9px;border-bottom:1px solid #dce4ed;text-align:left;vertical-align:top;font-size:13px}
+.workspace-panel .workspace-archive-grid th{background:#f5f8fc}
+.workspace-panel #workspace-archive-detail{margin:16px 0;padding:15px;border-radius:10px;border:1px solid #dce4ed}
+.workspace-panel .workspace-empty{font-size:13px;color:#627286}
+@media(max-width:760px){.workspace-panel .workspace-two-cols{grid-template-columns:1fr}}
+/* WORKSPACE_V10_CSS_END */

@@ -16,6 +16,7 @@ from .rag_api import router as rag_router
 from .evidence_matrix_api import router as evidence_router
 from .report_v08_api import router as report_router
 from .batch_v09_api import router as batch_router
+from .workspace_v10_api import router as workspace_router
 from .llm_match_api import router as llm_match_router
 from .llm_semantic_api import router as llm_semantic_router
 from .llm_experience_api import router as llm_experience_router
@@ -24,6 +25,7 @@ app.include_router(rag_router)
 app.include_router(evidence_router)
 app.include_router(report_router)
 app.include_router(batch_router)
+app.include_router(workspace_router)
 app.include_router(llm_router)
 app.include_router(llm_match_router)
 app.include_router(llm_semantic_router)

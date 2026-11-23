@@ -215,6 +215,21 @@
     .batch-actions { margin:10px 0; }
     /* BATCH_V09_CSS_END */
 
+  /* WORKSPACE_V10_CSS_START */
+.workspace-panel .workspace-two-cols {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:16px}
+.workspace-panel .workspace-item {padding:12px 14px;border:1px solid #dce4ed;border-radius:10px;margin:9px 0;background:#f8fafc}
+.workspace-panel .workspace-item p{margin:5px 0;color:#526175;font-size:13px}
+.workspace-panel .workspace-item .workspace-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+.workspace-panel .workspace-item button{padding:7px 12px;font-size:12px}
+.workspace-panel .workspace-archive-grid{max-width:100%;overflow-x:auto;margin-top:10px}
+.workspace-panel .workspace-archive-grid table{min-width:620px;width:100%;border-collapse:collapse}
+.workspace-panel .workspace-archive-grid td,.workspace-panel .workspace-archive-grid th{padding:9px;border-bottom:1px solid #dce4ed;text-align:left;vertical-align:top;font-size:13px}
+.workspace-panel .workspace-archive-grid th{background:#f5f8fc}
+.workspace-panel #workspace-archive-detail{margin:16px 0;padding:15px;border-radius:10px;border:1px solid #dce4ed}
+.workspace-panel .workspace-empty{font-size:13px;color:#627286}
+@media(max-width:760px){.workspace-panel .workspace-two-cols{grid-template-columns:1fr}}
+/* WORKSPACE_V10_CSS_END */
+
   </style>
 </head>
 
@@ -374,6 +389,61 @@
         <p class="notice">Доли дословных упоминаний не означают качество кандидата. Неподтверждённые сведения требуют ручной проверки. Полноценный RAG по каждому резюме отдельно в этом режиме не запускается.</p>
       </section>
       <!-- BATCH_V09_HTML_END -->
+
+      <!-- WORKSPACE_V10_HTML_START -->
+      <section id="workspace-panel" class="panel workspace-panel" aria-labelledby="workspace-title">
+        <h2 id="workspace-title">Кандидаты, вакансии и история · v1.0</h2>
+        <p class="info">Локальная история проверок: SQLite с шифрованием Fernet, отдельный ключ доступа и автоматическое удаление снимков через 30 дней (по умолчанию). Исходные файлы резюме не сохраняются.</p>
+        <div class="form-grid">
+          <div class="field wide">
+            <label for="workspace-token">Ключ доступа к локальной истории (из RESUMEMATCH_WORKSPACE_TOKEN)</label>
+            <input id="workspace-token" type="password" autocomplete="off" placeholder="Ключ из .env не сохраняется в браузере" />
+          </div>
+        </div>
+        <div class="action">
+          <button type="button" id="workspace-connect">Открыть историю</button>
+          <button type="button" id="workspace-logout" class="secondary" disabled>Закрыть доступ</button>
+        </div>
+        <p id="workspace-status" class="info status" role="status" aria-live="polite"></p>
+        <div id="workspace-content" class="hidden">
+          <h3>Сохранить результаты текущей проверки</h3>
+          <p class="info">Отчёт сохраняется только по кнопке. При сохранении матрица повторно проверяется по текущим исходным файлам; при открытии истории повторной проверки уже не происходит.</p>
+          <label class="consent" for="workspace-consent">
+            <input id="workspace-consent" type="checkbox" />
+            <span>Я разрешаю сохранить текстовые результаты и цитаты из резюме в локальной зашифрованной базе. Подтверждаю, что имею право обрабатывать эти данные.</span>
+          </label>
+          <div class="action">
+            <button type="button" id="workspace-save-report" class="secondary">Сохранить одиночный отчёт v0.8</button>
+            <button type="button" id="workspace-save-batch" class="secondary">Сохранить пакетную матрицу v0.9</button>
+          </div>
+          <h3>История анализов</h3>
+          <div class="action"><button type="button" id="workspace-refresh" class="secondary">Обновить историю</button></div>
+          <div id="workspace-archives"></div>
+          <div id="workspace-archive-detail" class="hidden"></div>
+          <div class="workspace-two-cols">
+            <div>
+              <h3>Кандидаты</h3>
+              <div class="field"><label for="workspace-candidate-name">Имя / метка</label>
+                <input id="workspace-candidate-name" maxlength="120" placeholder="Кандидат 01"></div>
+              <div class="field"><label for="workspace-candidate-note">Заметка</label>
+                <input id="workspace-candidate-note" maxlength="1000" placeholder="Для внутреннего использования"></div>
+              <div class="action"><button type="button" id="workspace-add-candidate" class="secondary">Добавить кандидата</button></div>
+              <div id="workspace-candidates"></div>
+            </div>
+            <div>
+              <h3>Вакансии</h3>
+              <div class="field"><label for="workspace-vacancy-title">Название вакансии</label>
+                <input id="workspace-vacancy-title" maxlength="180" placeholder="Python Backend"></div>
+              <div class="field"><label for="workspace-vacancy-description">Описание</label>
+                <textarea id="workspace-vacancy-description" rows="3" maxlength="24000"></textarea></div>
+              <div class="action"><button type="button" id="workspace-add-vacancy" class="secondary">Добавить вакансию</button></div>
+              <div id="workspace-vacancies"></div>
+            </div>
+          </div>
+          <p class="notice">Только для локального персонального использования на 127.0.0.1. Это не многопользовательский сервис. История не хранит PDF, DOCX и TXT, а архивный снимок не является повторно проверенным доказательством.</p>
+        </div>
+      </section>
+      <!-- WORKSPACE_V10_HTML_END -->
 
       <!-- JSON базового извлечения -->
       <div class="panel json-panel">
@@ -1956,6 +2026,299 @@
     $('batch-experience').addEventListener('change', batchReset);
     $('form').addEventListener('submit', batchReset);
     // BATCH_V09_JS_END
+
+    // WORKSPACE_V10_JS_START — токен только в памяти страницы; никаких localStorage/cookies.
+    let workspaceToken = null;
+
+    function workspaceText(tag, value, className = '') {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      element.textContent = String(value ?? '');
+      return element;
+    }
+    function workspaceStatus(message, error = false) {
+      const element = $('workspace-status');
+      element.textContent = message;
+      element.classList.toggle('error-text', error);
+    }
+    async function workspaceRequest(path, method = 'GET', data = undefined) {
+      if (!workspaceToken) throw new Error('Сначала откройте доступ к истории');
+      const headers = {'X-Workspace-Token': workspaceToken};
+      if (data !== undefined) headers['Content-Type'] = 'application/json';
+      const response = await fetch('/api/workspace' + path, {
+        method, headers, body: data === undefined ? undefined : JSON.stringify(data), cache: 'no-store'
+      });
+      if (!response.ok) {
+        let message = `HTTP ${response.status}`;
+        try {
+          const result = await response.json();
+          if (result.detail) message = typeof result.detail === 'string' ? result.detail : JSON.stringify(result.detail);
+        } catch (_) {}
+        throw new Error(message);
+      }
+      return response.json();
+    }
+    function workspaceItem(title, description = '') {
+      const node = workspaceText('div', '', 'workspace-item');
+      node.append(workspaceText('strong', title));
+      if (description) node.append(workspaceText('p', description));
+      return node;
+    }
+    function workspaceButton(label, callback) {
+      const button = workspaceText('button', label);
+      button.type = 'button';
+      button.className = 'secondary';
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        try { await callback(); }
+        catch (error) { workspaceStatus(`Ошибка истории: ${error.message}`, true); }
+        finally { button.disabled = false; }
+      });
+      return button;
+    }
+    function workspaceButtons(...buttons) {
+      const box = workspaceText('div', '', 'workspace-buttons');
+      box.append(...buttons);
+      return box;
+    }
+
+    function workspaceRenderCandidates(data) {
+      const target = $('workspace-candidates'); target.replaceChildren();
+      if (!data.items.length) target.append(workspaceText('p', 'Кандидатов пока нет.', 'workspace-empty'));
+      data.items.forEach(item => {
+        const box = workspaceItem(item.name, item.note);
+        box.append(workspaceButtons(
+          workspaceButton('Изменить', async () => {
+            const name = prompt('Новая метка кандидата', item.name);
+            if (name === null) return;
+            const note = prompt('Новая заметка', item.note || '');
+            if (note === null) return;
+            await workspaceRequest('/candidates/' + encodeURIComponent(item.id), 'PUT', {name, note});
+            await workspaceRefresh();
+          }),
+          workspaceButton('Удалить', async () => {
+            if (!confirm('Удалить кандидата и все связанные архивные отчёты без возможности восстановления?')) return;
+            await workspaceRequest('/candidates/' + encodeURIComponent(item.id), 'DELETE');
+            await workspaceRefresh();
+          })
+        ));
+        target.append(box);
+      });
+    }
+    function workspaceRenderVacancies(data) {
+      const target = $('workspace-vacancies'); target.replaceChildren();
+      if (!data.items.length) target.append(workspaceText('p', 'Вакансий пока нет.', 'workspace-empty'));
+      data.items.forEach(item => {
+        const box = workspaceItem(item.title, (item.description || '').slice(0, 180));
+        box.append(workspaceButtons(
+          workspaceButton('Изменить', async () => {
+            const title = prompt('Название вакансии', item.title);
+            if (title === null) return;
+            const description = prompt('Описание вакансии', item.description || '');
+            if (description === null) return;
+            await workspaceRequest('/vacancies/' + encodeURIComponent(item.id), 'PUT', {
+              title, description, key_skills: item.key_skills || []
+            });
+            await workspaceRefresh();
+          }),
+          workspaceButton('Удалить', async () => {
+            if (!confirm('Удалить вакансию и связанные архивные отчёты без возможности восстановления?')) return;
+            await workspaceRequest('/vacancies/' + encodeURIComponent(item.id), 'DELETE');
+            await workspaceRefresh();
+          })
+        ));
+        target.append(box);
+      });
+    }
+    function workspaceQuote(title, text) {
+      const block = workspaceText('p', `${title}: ${text || 'цитата отсутствует'}`, 'info');
+      return block;
+    }
+    function workspaceRenderArchiveDetails(data) {
+      const target = $('workspace-archive-detail');
+      target.replaceChildren();
+      target.append(workspaceText('h3', data.title));
+      target.append(workspaceText('p', data.notice, 'notice'));
+      const snapshot = data.snapshot || {};
+      if (data.kind === 'batch') {
+        target.append(workspaceText('p', 'Кандидаты: ' + (data.candidates || []).map(c => c.name).join(', '), 'info'));
+        const wrap = workspaceText('div', '', 'workspace-archive-grid');
+        const table = document.createElement('table');
+        const head = document.createElement('thead');
+        const trh = document.createElement('tr');
+        trh.append(workspaceText('th', 'Требование'));
+        (snapshot.candidates || []).forEach(c => trh.append(workspaceText('th', c.label)));
+        head.append(trh); table.append(head);
+        const body = document.createElement('tbody');
+        (snapshot.comparison || []).forEach(line => {
+          const tr = document.createElement('tr');
+          tr.append(workspaceText('td', line.requirement));
+          (line.candidates || []).forEach(item => {
+            tr.append(workspaceText('td', (typeof batchStatusLabels === 'object' && batchStatusLabels[item.status]) || item.status));
+          });
+          body.append(tr);
+        });
+        table.append(body); wrap.append(table); target.append(wrap);
+        (snapshot.candidates || []).forEach(candidate => {
+          const details = document.createElement('details');
+          details.append(workspaceText('summary', `${candidate.label} — сохранённые подтверждения`));
+          (candidate.rows || []).forEach(row => {
+            const item = workspaceItem(`${row.requirement}: ${row.status}`, row.detail);
+            (row.resume_evidence || []).forEach(ref => item.append(workspaceQuote('Резюме', ref.quote)));
+            if (row.vacancy_evidence?.quote) item.append(workspaceQuote('Вакансия', row.vacancy_evidence.quote));
+            details.append(item);
+          });
+          target.append(details);
+        });
+      } else {
+        const summary = snapshot.overview || {};
+        target.append(workspaceText('p', `Дословные упоминания: ${summary.literal_mentions ?? '—'}/${summary.required_skills ?? '—'}. Проверок на ручное рассмотрение: ${summary.review_items ?? '—'}.`, 'info'));
+        (snapshot.conclusion || []).forEach(line => target.append(workspaceText('p', line)));
+        (snapshot.rows || []).forEach(row => {
+          const item = workspaceItem(`${row.requirement} — ${row.status_label || row.status}`, row.detail);
+          (row.resume_quotes || []).forEach(proof => item.append(workspaceQuote('Резюме', proof.quote)));
+          if (row.vacancy_quote) item.append(workspaceQuote('Вакансия', row.vacancy_quote));
+          target.append(item);
+        });
+      }
+      target.classList.remove('hidden');
+    }
+    function workspaceRenderArchives(data) {
+      const target = $('workspace-archives'); target.replaceChildren();
+      if (!data.items.length) target.append(workspaceText('p', 'Сохранённых анализов пока нет.', 'workspace-empty'));
+      data.items.forEach(item => {
+        const description = `Тип: ${item.kind === 'batch' ? 'пакет' : 'одиночный отчёт'} · Создан: ${item.created_at.slice(0, 10)} · Удаление после: ${item.expires_at.slice(0, 10)}`;
+        const box = workspaceItem(item.title, description);
+        box.append(workspaceButtons(
+          workspaceButton('Открыть', async () => {
+            const result = await workspaceRequest('/archives/' + encodeURIComponent(item.id));
+            workspaceRenderArchiveDetails(result);
+          }),
+          workspaceButton('Удалить', async () => {
+            if (!confirm('Безвозвратно удалить архивный снимок?')) return;
+            await workspaceRequest('/archives/' + encodeURIComponent(item.id), 'DELETE');
+            $('workspace-archive-detail').replaceChildren();
+            $('workspace-archive-detail').classList.add('hidden');
+            await workspaceRefresh();
+          })
+        ));
+        target.append(box);
+      });
+    }
+    async function workspaceRefresh() {
+      const [archives, candidates, vacancies] = await Promise.all([
+        workspaceRequest('/archives'), workspaceRequest('/candidates'), workspaceRequest('/vacancies')
+      ]);
+      workspaceRenderArchives(archives);
+      workspaceRenderCandidates(candidates);
+      workspaceRenderVacancies(vacancies);
+    }
+    async function workspaceConnect() {
+      workspaceToken = $('workspace-token').value;
+      $('workspace-token').value = '';
+      try {
+        await workspaceRefresh();
+        $('workspace-content').classList.remove('hidden');
+        $('workspace-logout').disabled = false;
+        workspaceStatus('История открыта. Ключ хранится только в памяти этой страницы.');
+      } catch (error) {
+        workspaceLogout();
+        workspaceStatus(`Не удалось открыть историю: ${error.message}`, true);
+      }
+    }
+    function workspaceLogout() {
+      workspaceToken = null;
+      $('workspace-token').value = '';
+      $('workspace-content').classList.add('hidden');
+      $('workspace-logout').disabled = true;
+      ['workspace-archives', 'workspace-candidates', 'workspace-vacancies', 'workspace-archive-detail'].forEach(id => $(id).replaceChildren());
+      $('workspace-archive-detail').classList.add('hidden');
+      $('workspace-consent').checked = false;
+    }
+    async function workspaceSave(kind) {
+      if (!$('workspace-consent').checked) throw new Error('Подтвердите согласие на локальное сохранение');
+      let record;
+      if (kind === 'single') {
+        const {form, original, selectedIndex} = reportFormPayload();
+        const selected = latest.matches[selectedIndex].vacancy;
+        const response = await fetch('/api/report/preview', {method:'POST', body:form, cache:'no-store'});
+        if (!response.ok) {
+          const details = await response.json().catch(() => ({}));
+          throw new Error(details.detail || `HTTP ${response.status}`);
+        }
+        const report = await response.json();
+        reportCheckStale(original, selectedIndex);
+        record = {
+          kind: 'single', title: `Отчёт · ${selected.name || 'Вакансия'}`,
+          vacancy: {title: selected.name || 'Вакансия', description: selected.description_text || '', key_skills: selected.key_skills || []},
+          candidate_labels: [report.candidate_label || 'Кандидат'], snapshot: report, save_consent: true
+        };
+      } else {
+        const ctx = batchContext;
+        if (!ctx) throw new Error('Сначала выполните пакетное сравнение v0.9');
+        if (!latest?.matches?.some(item => item.vacancy.id === ctx.vacancy.id)) throw new Error('Вакансия изменилась');
+        const form = new FormData();
+        ctx.files.forEach(file => form.append('resumes', file));
+        form.append('resume_extractions', JSON.stringify(ctx.extractions));
+        form.append('vacancy_extraction', JSON.stringify(ctx.vacancyExtraction));
+        form.append('vacancy_source', JSON.stringify(ctx.vacancySource));
+        form.append('experience_results', JSON.stringify(ctx.experiences));
+        form.append('candidate_labels', JSON.stringify(ctx.labels));
+        const response = await fetch('/api/batch/compare', {method:'POST', body:form, cache:'no-store'});
+        if (!response.ok) {
+          const details = await response.json().catch(() => ({}));
+          throw new Error(details.detail || `HTTP ${response.status}`);
+        }
+        const matrix = await response.json();
+        if (batchContext !== ctx) throw new Error('Результат изменился, повтори анализ');
+        record = {
+          kind: 'batch', title: `Пакет · ${ctx.vacancy.name || 'Вакансия'}`,
+          vacancy: {title: ctx.vacancy.name || 'Вакансия', description: ctx.vacancySource.description_text || '', key_skills: ctx.vacancySource.key_skills || []},
+          candidate_labels: ctx.labels, snapshot: matrix, save_consent: true
+        };
+      }
+      const saved = await workspaceRequest('/archives', 'POST', record);
+      workspaceStatus(`Сохранено в локальной истории. Идентификатор: ${saved.id.slice(0, 8)}. Срок хранения до ${saved.expires_at.slice(0, 10)}.`);
+      await workspaceRefresh();
+    }
+    $('workspace-connect').addEventListener('click', workspaceConnect);
+    $('workspace-logout').addEventListener('click', () => { workspaceLogout(); workspaceStatus('Доступ закрыт.'); });
+    $('workspace-refresh').addEventListener('click', async () => {
+      try { await workspaceRefresh(); workspaceStatus('История обновлена.'); }
+      catch (error) { workspaceStatus(`Ошибка обновления: ${error.message}`, true); }
+    });
+    $('workspace-save-report').addEventListener('click', async () => {
+      const button = $('workspace-save-report'); button.disabled = true;
+      try { await workspaceSave('single'); }
+      catch (error) { workspaceStatus(`Не удалось сохранить отчёт: ${error.message}`, true); }
+      finally { button.disabled = false; }
+    });
+    $('workspace-save-batch').addEventListener('click', async () => {
+      const button = $('workspace-save-batch'); button.disabled = true;
+      try { await workspaceSave('batch'); }
+      catch (error) { workspaceStatus(`Не удалось сохранить пакет: ${error.message}`, true); }
+      finally { button.disabled = false; }
+    });
+    $('workspace-add-candidate').addEventListener('click', async () => {
+      try {
+        await workspaceRequest('/candidates', 'POST', {
+          name: $('workspace-candidate-name').value, note: $('workspace-candidate-note').value
+        });
+        $('workspace-candidate-name').value = ''; $('workspace-candidate-note').value = '';
+        await workspaceRefresh();
+      } catch (error) { workspaceStatus(`Ошибка сохранения кандидата: ${error.message}`, true); }
+    });
+    $('workspace-add-vacancy').addEventListener('click', async () => {
+      try {
+        await workspaceRequest('/vacancies', 'POST', {
+          title: $('workspace-vacancy-title').value,
+          description: $('workspace-vacancy-description').value, key_skills: []
+        });
+        $('workspace-vacancy-title').value = ''; $('workspace-vacancy-description').value = '';
+        await workspaceRefresh();
+      } catch (error) { workspaceStatus(`Ошибка сохранения вакансии: ${error.message}`, true); }
+    });
+    // WORKSPACE_V10_JS_END
 
     $('form').addEventListener('submit', runLocalAnalysis);
     $('run-llm').addEventListener('click', runLlmAnalysis);
